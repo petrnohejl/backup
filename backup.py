@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """
-Backup version 1.0
+Backup version 1.1
 
-Copyright (C)2011 Petr Nohejl, jestrab.net
+Copyright (C)2011-2012 Petr Nohejl, jestrab.net
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -25,7 +25,7 @@ This program comes with ABSOLUTELY NO WARRANTY!
 
 
 # Pouzite prikazy:
-# "C:\Program Files (x86)\WinRAR\Rar.exe" a -t -id[c] D:\test.rar D:\test - pridat a otestovat, bez rar copyright hlavicky
+# "C:\Program Files (x86)\WinRAR\Rar.exe" a -t -id[c] -hpmypassword D:\test.rar D:\test - pridat a otestovat, bez rar copyright hlavicky
 # "C:\Program Files (x86)\WinRAR\Rar.exe" t D:\test.rar - otestovat archiv
 
 
@@ -36,6 +36,7 @@ import shutil
 import string
 import time
 import re
+import getpass
 
 
 # KONFIGURACE
@@ -46,7 +47,7 @@ WIN_RAR_PATH = os.path.join("C:\\", "Program Files (x86)", "WinRAR", "Rar.exe")
 
 # BACKUP
 class Backup():
-	def __init__(self):
+	def __init__(self, password):
 		# vytvoreni vystupniho adresare
 		self.checkDirectory(OUTPUT_DIRECTORY)
 
@@ -54,13 +55,13 @@ class Backup():
 		backupList = self.loadBackupList(BACKUP_LIST)
 
 		# zalohovani
-		self.backup(backupList)
+		self.backup(backupList, password)
 
 
 	"""
 	Vytvoreni archivu pro vsechny adresare v seznamu.
 	"""
-	def backup(self, backupList):
+	def backup(self, backupList, password):
 		# datum
 		date = time.strftime("%y_%m_%d", time.gmtime())
 
@@ -75,11 +76,15 @@ class Backup():
 
 			# sestaveni prikazu pro pridani do archivu
 			program = '"' + WIN_RAR_PATH + '"'
-			parametres = ' a -t -id[c] "' + filenamefull + '" "' + dir + '"'
+			if(password==""):
+				passwordcommand = ""
+			else:
+				passwordcommand = "-hp" + password
+			parametres = ' a -t -id[c] ' + passwordcommand + ' "' + filenamefull + '" "' + dir + '"'
 			#parametres = ' t "' + filenamefull + '"'
 			command = program + parametres
 			args = shlex.split(command)
-			print command
+			print self.hidePassword(command, password)
 
 			# spusteni prikazu
 			#os.system(command)
@@ -92,7 +97,7 @@ class Backup():
 			reports.append(reportFilenamefull)
 			file = open(reportFilenamefull, "w")
 			file.write("--------------------------------------------------------------------------------" + "\n")
-			file.write(command + "\n")
+			file.write(self.hidePassword(command, password) + "\n")
 			file.write("\n")
 
 			# zpracovani vystupu
@@ -182,8 +187,23 @@ class Backup():
 	"""
 	def getTime(self, seconds):
 		return time.strftime("%H:%M:%S", time.gmtime(seconds))
+		
+		
+	"""
+	Skryti hesla.
+	"""
+	def hidePassword(self, command, password):
+		cutpassword = password[1:]
+		stars = len(cutpassword) * "*"
+		return string.replace(command, cutpassword, stars)
 			
 
 # MAIN
 if (__name__=="__main__"):
-	Backup()
+	password1 = getpass.getpass("Enter password for RAR archives (empty for no password): ")
+	if(string.strip(password1)==""): 
+		Backup("")
+	else:
+		password2 = getpass.getpass("Enter password again: ")
+		if(password1==password2): Backup(string.strip(password1))
+		else: print "Passwords are different. Try again."
