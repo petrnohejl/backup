@@ -1,7 +1,5 @@
---------------------------------------------------------------------------------
-
 Backup
-(c) 2011-2012 Petr Nohejl
+======
 
 Backup slouží k zálohování dat pomocí programu WinRAR 3.62 (jiné verze nebyly 
 testovány). Pomocí tohoto skriptu lze snadno zálohovat všechna důležitá data
@@ -25,19 +23,38 @@ zálohování (volaný příkaz programu Rar, název archívu, velikost, délka
 zálohování, upozornění na chyby). Na závěr se vytvoří ještě jeden textový
 soubor, shrnující celý průběh zálohování.
 
---------------------------------------------------------------------------------
 
-Instalace:
+Použití
+=======
 
-Backup je konzolová aplikace (spouští se v příkazovém řádku) a je napsána v
-jazyce Python 2.7. Pro její spuštění je třeba mít nainstalován interpret jazyka
-Python, který lze stáhnout na adrese: www.python.org.
+Backup je konzolová aplikace a je napsána v jazyce Python 2.7. Pro její
+spuštění je třeba mít nainstalován interpret jazyka Python, který lze
+stáhnout na adrese www.python.org.
 
---------------------------------------------------------------------------------
+```bash
+$ python backup.py    # spustí zálohu dat dle konfigurace skriptu
+```
 
-Ovládání:
 
-backup - spustí zálohu dat dle konfigurace skriptu
-         příklad použití: backup.py
+Developed by
+============
 
---------------------------------------------------------------------------------
+* [Petr Nohejl](http://petrnohejl.cz)
+
+
+License
+=======
+
+    Copyright 2011 Petr Nohejl
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
