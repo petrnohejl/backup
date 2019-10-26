@@ -20,7 +20,7 @@ import getpass
 # KONFIGURACE
 BACKUP_LIST = "backuplist.txt"
 OUTPUT_DIRECTORY = os.path.join("W:\\", "BACKUP")
-WIN_RAR_PATH = os.path.join("C:\\", "Program Files (x86)", "WinRAR", "Rar.exe")
+WIN_RAR_PATH = os.path.join("C:\\", "Program Files", "WinRAR", "Rar.exe")
 
 
 # BACKUP
