@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -54,7 +54,7 @@ class Backup():
 
 			# sestaveni prikazu pro pridani do archivu
 			program = '"' + WIN_RAR_PATH + '"'
-			if(password==""):
+			if password == "":
 				passwordcommand = ""
 			else:
 				passwordcommand = "-hp" + password
@@ -62,7 +62,7 @@ class Backup():
 			#parametres = ' t "' + filenamefull + '"'
 			command = program + parametres
 			args = shlex.split(command)
-			print self.hidePassword(command, password)
+			print(self.hidePassword(command, password))
 
 			# spusteni prikazu
 			#os.system(command)
@@ -79,10 +79,10 @@ class Backup():
 			file.write("\n")
 
 			# zpracovani vystupu
-			for line in iter(process.stdout.readline,''):
-				line = line.rstrip()
-				print line
-
+			for rawLine in iter(process.stdout.readline, b''):
+				line = rawLine.decode("cp1250").rstrip()
+				print(line)
+				
 				regexp = re.compile("^Adding .+OK$|^Testing .+OK$|^Updating .+OK$|^$")
 				if not regexp.search(line):
 					file.write(line + "\n")
@@ -109,7 +109,7 @@ class Backup():
 	Overeni existence adresare a pripadne vytvoreni.
 	"""
 	def checkDirectory(self, directory):
-		if(not os.path.exists(directory)):
+		if not os.path.exists(directory):
 			os.mkdir(directory)
 
 
@@ -120,8 +120,8 @@ class Backup():
 		file = open(filename, "r")
 		backupList = []
 		for line in file.readlines():
-			path = string.strip(line)
-			if(os.path.exists(path)):
+			path = line.strip()
+			if os.path.exists(path):
 				backupList.append(path)
 		file.close
 		return backupList
@@ -132,9 +132,9 @@ class Backup():
 	"""
 	def generateName(self, directory, date):
 		filename1 = os.path.split(directory)
-		if(len(filename1)>1):
+		if len(filename1) > 1:
 			filename2 = os.path.split(filename1[0])[1]
-			if(filename2!=""):
+			if filename2 != "":
 				filename2 = filename2 + "_"
 		else:
 			filename2 = ""
@@ -150,11 +150,11 @@ class Backup():
 	"""
 	def getSize(self, filename):
 		filesize = os.path.getsize(filename)
-		if(filesize>=1073741824):
+		if filesize >= 1073741824:
 			return str(round(filesize/1073741824.0, 2)) + " GB"
-		elif(filesize>=1048576):
+		elif filesize >= 1048576:
 			return str(round(filesize/1048576.0, 2)) + " MB"
-		elif(filesize>=1024):
+		elif filesize >= 1024:
 			return str(round(filesize/1024.0, 2)) + " kB"
 		else:
 			return str(filesize) + " B"
@@ -165,23 +165,23 @@ class Backup():
 	"""
 	def getTime(self, seconds):
 		return time.strftime("%H:%M:%S", time.gmtime(seconds))
-		
-		
+
+
 	"""
 	Skryti hesla.
 	"""
 	def hidePassword(self, command, password):
 		cutpassword = password[1:]
 		stars = len(cutpassword) * "*"
-		return string.replace(command, cutpassword, stars)
-			
+		return command.replace(cutpassword, stars)
+
 
 # MAIN
-if (__name__=="__main__"):
+if __name__ == "__main__":
 	password1 = getpass.getpass("Enter password for RAR archives (empty for no password): ")
-	if(string.strip(password1)==""): 
+	if password1.strip() == "":
 		Backup("")
 	else:
 		password2 = getpass.getpass("Enter password again: ")
-		if(password1==password2): Backup(string.strip(password1))
-		else: print "Passwords are different. Try again."
+		if password1 == password2: Backup(password1.strip())
+		else: print("Passwords are different. Try again.")
