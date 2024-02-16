@@ -11,7 +11,6 @@ import os
 import subprocess
 import shlex
 import shutil
-import string
 import time
 import re
 import getpass
@@ -80,7 +79,7 @@ class Backup():
 
 			# zpracovani vystupu
 			for rawLine in iter(process.stdout.readline, b''):
-				line = rawLine.decode("cp1250").rstrip()
+				line = rawLine.decode("windows-1252").rstrip()
 				print(line)
 				
 				regexp = re.compile("^Adding .+OK$|^Testing .+OK$|^Updating .+OK$|^$")
